@@ -1,9 +1,9 @@
 import email.message as email_msg
 
-import snoozin.gmail.creds as creds
-import snoozin.gmail.read as read_email
-import snoozin.gmail.send as send_email
-import snoozin.gmail.modify as modify_email
+import snoozingmail.gmail.creds as creds
+import snoozingmail.gmail.read as read_email
+import snoozingmail.gmail.send as send_email
+import snoozingmail.gmail.modify as modify_email
 
 class Snoozin:
     def __init__(self, credentials):
