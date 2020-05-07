@@ -1,6 +1,3 @@
-"""Send an email message from the user's account.
-"""
-
 import base64
 from email.mime.audio import MIMEAudio
 from email.mime.base import MIMEBase
@@ -13,28 +10,25 @@ import os
 from apiclient import errors
 
 
-def SendMessage(service, user_id, message):
+def SendMessage(service, message):
     """Send an email message.
 
     Args:
         service: Authorized Gmail API service instance.
-        user_id: User's email address. The special value "me"
-        can be used to indicate the authenticated user.
         message: Message to be sent.
 
     Returns:
         Sent Message.
     """
     try:
-        message = (service.users().messages().send(userId=user_id, body=message)
+        message = (service.users().messages().send(userId="me", body=message)
                 .execute())
-        print('Message Id: %s' % message['id'])
         return message
     except errors.HttpError as error:
         print('An error occurred: %s' % error)
 
 
-def CreateMessage(sender, to, subject, message_text):
+def CreateMessage(to, subject, message_text):
     """Create a message for an email.
 
     Args:
@@ -48,61 +42,60 @@ def CreateMessage(sender, to, subject, message_text):
     """
     message = MIMEText(message_text)
     message['to'] = to
-    message['from'] = sender
+    message['from'] = "me"
     message['subject'] = subject
     b64_bytes = base64.urlsafe_b64encode(message.as_bytes())
     b64_string = b64_bytes.decode()
     return {'raw': b64_string}
 
 
-def CreateMessageWithAttachment(sender, to, subject, message_text, file_dir,
-                                filename):
+def CreateMessageWithAttachment(to, subject, message_text, file_path):
     """Create a message for an email.
 
     Args:
-        sender: Email address of the sender.
         to: Email address of the receiver.
         subject: The subject of the email message.
         message_text: The text of the email message.
-        file_dir: The directory containing the file to be attached.
-        filename: The name of the file to be attached.
+        file_path: The path to the file to be attached.
 
     Returns:
         An object containing a base64 encoded email object.
     """
     message = MIMEMultipart()
     message['to'] = to
-    message['from'] = sender
+    message['from'] = "me"
     message['subject'] = subject
 
     msg = MIMEText(message_text)
     message.attach(msg)
 
-    path = os.path.join(file_dir, filename)
-    content_type, encoding = mimetypes.guess_type(path)
+    content_type, encoding = mimetypes.guess_type(file_path)
 
     if content_type is None or encoding is not None:
         content_type = 'application/octet-stream'
     main_type, sub_type = content_type.split('/', 1)
     if main_type == 'text':
-        fp = open(path, 'rb')
+        fp = open(file_path, 'rb')
         msg = MIMEText(fp.read(), _subtype=sub_type)
         fp.close()
     elif main_type == 'image':
-        fp = open(path, 'rb')
+        fp = open(file_path, 'rb')
         msg = MIMEImage(fp.read(), _subtype=sub_type)
         fp.close()
     elif main_type == 'audio':
-        fp = open(path, 'rb')
+        fp = open(file_path, 'rb')
         msg = MIMEAudio(fp.read(), _subtype=sub_type)
         fp.close()
     else:
-        fp = open(path, 'rb')
+        fp = open(file_path, 'rb')
         msg = MIMEBase(main_type, sub_type)
         msg.set_payload(fp.read())
         fp.close()
 
-    msg.add_header('Content-Disposition', 'attachment', filename=filename)
+    msg.add_header('Content-Disposition', 'attachment',
+                   filename=os.path.basename(file_path))
     message.attach(msg)
 
-    return {'raw': base64.urlsafe_b64encode(message.as_string())}
+    b64_bytes = base64.urlsafe_b64encode(message.as_bytes())
+    b64_string = b64_bytes.decode()
+    return {'raw': b64_string}

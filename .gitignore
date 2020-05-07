@@ -128,5 +128,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# vscode
+# code editor files
 .vscode/
+
+# client secret files
+*.json
+*.pickle
+
+# test file
+test.py

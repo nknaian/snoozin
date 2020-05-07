@@ -12,11 +12,10 @@ from google.auth.transport.requests import Request
 
 
 # If modifying these scopes, delete the file token.pickle.
-CLIENT_SECRET_FILE = '/home/pi/snoozin/gmail/client_secret_alarm_control.json'
 SCOPES = ['https://www.googleapis.com/auth/gmail.modify']
 
 
-def get_gmail_service():
+def get_gmail_service(clien_secret_json):
     """Get gmail service using credentials"""
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
@@ -31,7 +30,7 @@ def get_gmail_service():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                CLIENT_SECRET_FILE, SCOPES)
+                clien_secret_json, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
