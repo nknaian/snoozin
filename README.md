@@ -1,4 +1,4 @@
-# snoozin-gmail
+# snoozingmail
 A minimal python3 wrapper for the Gmail API that exposes basic message reading, modifying, and sending capabilities.
 
 # usage
