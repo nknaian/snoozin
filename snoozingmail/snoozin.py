@@ -1,3 +1,4 @@
+import re
 import email.message as email_msg
 
 import snoozingmail.gmail.creds as creds

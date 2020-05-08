@@ -7,7 +7,6 @@ pip install snoozingmail
 ```
 
 # usage
-
 - You'll first need to create a Cloud Platform project enabled with the python Gmail API, and download the *credentials.json* file. To do that follow Google's [quickstart](https://developers.google.com/gmail/api/quickstart/python)
 - Create a new `Snoozin` object with the path to your *credentials.json* file like so:
     ```python
