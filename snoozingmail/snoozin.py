@@ -7,6 +7,11 @@ import snoozingmail.gmail.send as send_email
 import snoozingmail.gmail.modify as modify_email
 
 class Snoozin:
+    """The interface into gmail api wrapper
+
+    Has methods to read, send, and label messages
+    in the connected gmail account.
+    """
     def __init__(self, credentials):
         """Initialize the Snoozin object by creating the gmail
         service using the provided credentials file.
