@@ -1,4 +1,4 @@
-snoozingmail API reference
+snoozingmail's Snoozin class
 ========================================
 .. autoclass:: snoozingmail.snoozin.Snoozin
    :members:
