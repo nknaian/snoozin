@@ -6,9 +6,6 @@ A minimal python3 wrapper for the Gmail API that exposes basic message reading, 
 pip install snoozingmail
 ```
 
-# docs
-- Check out the api reference at: https://snoozingmail.readthedocs.io/en/latest/
-
 # usage
 - You'll first need to create a Cloud Platform project enabled with the python Gmail API, and download the *credentials.json* file. To do that follow Google's [quickstart](https://developers.google.com/gmail/api/quickstart/python)
 - Create a new `Snoozin` object with the path to your *credentials.json* file like so:
@@ -28,3 +25,6 @@ body_text = snoozin.get_msg_body(msg_ids[0])
 print(body_text)
 
 ```
+
+# docs
+- Full reference of Snoozin methods at: https://snoozingmail.readthedocs.io/en/latest/
