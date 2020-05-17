@@ -2,11 +2,8 @@ snoozingmail API reference
 ========================================
 .. autoclass:: snoozingmail.snoozin.Snoozin
    :members:
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
+   :undoc-members:
+   :special-members: __init__
 
 
 Indices and tables
