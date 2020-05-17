@@ -15,7 +15,7 @@ def GetMimeMessage(service, msg_id):
     """
     try:
         message = service.users().messages().get(userId="me", id=msg_id,
-                                                format='raw').execute()
+                                                 format='raw').execute()
 
         # Decode raw message to bytes
         msg_bytes = base64.urlsafe_b64decode(message['raw'])
@@ -43,15 +43,17 @@ def ListMessagesMatchingQuery(service, query=''):
     """
     try:
         response = service.users().messages().list(userId="me",
-                                               q=query).execute()
+                                                   q=query).execute()
         messages = []
         if 'messages' in response:
             messages.extend(response['messages'])
 
         while 'nextPageToken' in response:
             page_token = response['nextPageToken']
-            response = service.users().messages().list(userId="me", q=query,
-                                                pageToken=page_token).execute()
+            response = service.users().messages().list(
+                userId="me", q=query,
+                pageToken=page_token
+            ).execute()
             messages.extend(response['messages'])
 
         return messages
@@ -72,17 +74,21 @@ def ListMessagesWithLabels(service, label_ids=[]):
         appropriate id to get the details of a Message.
     """
     try:
-        response = service.users().messages().list(userId="me",
-                                                labelIds=label_ids).execute()
+        response = service.users().messages().list(
+            userId="me",
+            labelIds=label_ids
+        ).execute()
         messages = []
         if 'messages' in response:
             messages.extend(response['messages'])
 
         while 'nextPageToken' in response:
             page_token = response['nextPageToken']
-            response = service.users().messages().list(userId="me",
-                                                        labelIds=label_ids,
-                                                        pageToken=page_token).execute()
+            response = service.users().messages().list(
+                userId="me",
+                labelIds=label_ids,
+                pageToken=page_token
+            ).execute()
             messages.extend(response['messages'])
 
         return messages

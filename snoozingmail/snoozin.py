@@ -6,10 +6,11 @@ import snoozingmail.gmail.read as read_email
 import snoozingmail.gmail.send as send_email
 import snoozingmail.gmail.modify as modify_email
 
-class Snoozin:
-    """The interface into gmail api wrapper
 
-    Has methods to read, send, and label messages
+class Snoozin:
+    """Interface into the gmail api wrapper.
+
+    Has methods to read, send, and modify messages
     in the connected gmail account.
     """
     def __init__(self, credentials):
@@ -17,35 +18,35 @@ class Snoozin:
         service using the provided credentials file.
 
         Args:
-            credentials: Local path to client secret json file.
+            credentials: Local path to credentials file
         """
         self.service = creds.get_gmail_service(credentials)
 
     def get_matching_msgs(self, query):
         """Get message ids for messages that match the given query
-        
+
         Args:
             query: String used to filter messages returned. (ex:
-                   'from:user@some_domain.com' for Messages from 
+                   'from:user@some_domain.com' for Messages from
                    a particular sender.)
 
         Returns:
             List of message ids
         """
         msg_matches = read_email.ListMessagesMatchingQuery(self.service, query)
-        return [msg_match["id"] for msg_match in msg_matches]  
+        return [msg_match["id"] for msg_match in msg_matches]
 
-    def get_labeled_msgs(self, label_ids):
+    def get_labeled_msgs(self, labels):
         """Get message ids for messages that have all the given labels
-        
+
         Args:
-            label_ids: list of label ids that must be included (ex: 
-                       '['STARRED', 'UNREAD']' for starred unread emails)
+            labels: list of labels (ex: '['STARRED', 'UNREAD']' for
+                    starred unread emails)
 
         Returns:
             List of message ids
         """
-        labeled_msgs = read_email.ListMessagesWithLabels(self.service, label_ids)
+        labeled_msgs = read_email.ListMessagesWithLabels(self.service, labels)
         return [labeled_msg["id"] for labeled_msg in labeled_msgs]
 
     def get_sender(self, msg_id):
@@ -66,14 +67,28 @@ class Snoozin:
         sender_address = re.search('<(.*)>', sender_full).group(1)
         return sender_address
 
-    def mark_msg_read(self, msg_id):
-        """ Mark the given message as read (remove UNREAD label).
+    def remove_msg_labels(self, msg_id, labels):
+        """Remove labels from the given message.
 
         Args:
             msg_id: The id of the message, which can be used to get details
                     of the message.
+            labels: list of labels (ex: '['STARRED', 'UNREAD']' for
+                    starred unread emails)
         """
-        msg_labels = { 'removeLabelIds': ['UNREAD'] }
+        msg_labels = {'removeLabelIds': labels}
+        modify_email.ModifyMessage(self.service, msg_id, msg_labels)
+
+    def add_msg_labels(self, msg_id, labels):
+        """Add labels to the given message.
+
+        Args:
+            msg_id: The id of the message, which can be used to get details
+                    of the message.
+            labels: list of labels (ex: '['STARRED', 'UNREAD']' for
+                    starred unread emails)
+        """
+        msg_labels = {'addLabelIds': labels}
         modify_email.ModifyMessage(self.service, msg_id, msg_labels)
 
     def get_msg_body(self, msg_id):
@@ -91,8 +106,9 @@ class Snoozin:
 
         # Find the plain text part of the message body
         plain_txt_msg = email_msg.Message()
-        if not message.is_multipart() and (message.get_content_type() == 'text/plain'):
-           plain_txt_msg = message
+        if not message.is_multipart() and \
+                (message.get_content_type() == 'text/plain'):
+            plain_txt_msg = message
         elif message.is_multipart():
             # Go through message and capture plain text of message body
             for part in message.walk():
@@ -120,7 +136,10 @@ class Snoozin:
         """
 
         if file_path:
-            message = send_email.CreateMessageWithAttachment(to, subject, message_text, file_path)
+            message = \
+                send_email.CreateMessageWithAttachment(to, subject,
+                                                       message_text,
+                                                       file_path)
         else:
             message = send_email.CreateMessage(to, subject, message_text)
         return send_email.SendMessage(self.service, message)

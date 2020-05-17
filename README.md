@@ -27,4 +27,5 @@ print(body_text)
 ```
 
 # docs
-- Full reference of Snoozin methods at: https://snoozingmail.readthedocs.io/en/latest/
+- Full documentation of snoozingmail module: https://snoozingmail.readthedocs.io/en/latest/
+- The core gmail interfaces were based off of the python 2 Users.messages section of the Gmail api: https://developers.google.com/gmail/api/v1/reference/users/messages

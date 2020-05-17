@@ -5,12 +5,6 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 
-############# NOTE (this may be outdated...): ###############
-# If originally created gmail api access on another computer,
-# need to add the argument --noauth_local_webserver to the python file
-# after setting credentials.invalid equal
-
-
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/gmail.modify']
 

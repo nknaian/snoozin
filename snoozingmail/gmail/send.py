@@ -21,8 +21,10 @@ def SendMessage(service, message):
         Sent Message.
     """
     try:
-        message = (service.users().messages().send(userId="me", body=message)
-                .execute())
+        message = service.users().messages().send(
+            userId="me",
+            body=message
+        ).execute()
         return message
     except errors.HttpError as error:
         print('An error occurred: %s' % error)
