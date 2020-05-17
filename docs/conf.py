@@ -58,4 +58,4 @@ html_theme = 'alabaster'
 html_static_path = ['_static']
 
 # Change master doc to 'index'
-master_doc = 'index.rst'
+master_doc = 'index'
