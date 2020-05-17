@@ -1,6 +1,5 @@
-Welcome to snoozingmail's documentation!
+snoozingmail API reference
 ========================================
-
 .. autoclass:: snoozingmail.snoozin.Snoozin
    :members:
 

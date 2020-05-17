@@ -25,8 +25,9 @@ class Snoozin:
         """Get message ids for messages that match the given query
         
         Args:
-            query: String used to filter messages returned.
-            Eg.- 'from:user@some_domain.com' for Messages from a particular sender.
+            query: String used to filter messages returned. (ex:
+                   'from:user@some_domain.com' for Messages from 
+                   a particular sender.)
 
         Returns:
             List of message ids
@@ -38,8 +39,8 @@ class Snoozin:
         """Get message ids for messages that have all the given labels
         
         Args:
-            label_ids: list of label ids that must be included
-            Eg.- '['STARRED', 'UNREAD']' for starred unread emails 
+            label_ids: list of label ids that must be included (ex: 
+                       '['STARRED', 'UNREAD']' for starred unread emails)
 
         Returns:
             List of message ids
