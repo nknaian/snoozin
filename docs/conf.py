@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'snoozingmail'
-copyright = '2020, Author'
-author = 'Author'
+copyright = '2020, Nicolas Knaian'
+author = 'Nicolas Knaian'
 release = '0.0.5'
 
 
