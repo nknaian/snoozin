@@ -65,4 +65,4 @@ html_static_path = ['_static']
 
 # -- Readthedocs configuration -------------------------------------------------
 
-master_doc = 'snoozingmail'
+master_doc = 'index'
