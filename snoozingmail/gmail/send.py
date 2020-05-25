@@ -30,35 +30,17 @@ def SendMessage(service, message):
         print('An error occurred: %s' % error)
 
 
-def CreateMessage(to, subject, message_text):
-    """Create a message for an email.
-
-    Args:
-        sender: Email address of the sender.
-        to: Email address of the receiver.
-        subject: The subject of the email message.
-        message_text: The text of the email message.
-
-    Returns:
-        An object containing a base64 encoded email object.
-    """
-    message = MIMEText(message_text)
-    message['to'] = to
-    message['from'] = "me"
-    message['subject'] = subject
-    b64_bytes = base64.urlsafe_b64encode(message.as_bytes())
-    b64_string = b64_bytes.decode()
-    return {'raw': b64_string}
-
-
-def CreateMessageWithAttachment(to, subject, message_text, file_path):
+def CreateMessage(to, subject, message_body, html=False,
+                  attachments=[]):
     """Create a message for an email.
 
     Args:
         to: Email address of the receiver.
         subject: The subject of the email message.
-        message_text: The text of the email message.
-        file_path: The path to the file to be attached.
+        message_body: The content of the email message.
+        html: Whether the mesage_body is formatted as html
+        attachments: List of file paths to files that should be
+                     attached to the email
 
     Returns:
         An object containing a base64 encoded email object.
@@ -68,35 +50,43 @@ def CreateMessageWithAttachment(to, subject, message_text, file_path):
     message['from'] = "me"
     message['subject'] = subject
 
-    msg = MIMEText(message_text)
-    message.attach(msg)
-
-    content_type, encoding = mimetypes.guess_type(file_path)
-
-    if content_type is None or encoding is not None:
-        content_type = 'application/octet-stream'
-    main_type, sub_type = content_type.split('/', 1)
-    if main_type == 'text':
-        fp = open(file_path, 'rb')
-        msg = MIMEText(fp.read(), _subtype=sub_type)
-        fp.close()
-    elif main_type == 'image':
-        fp = open(file_path, 'rb')
-        msg = MIMEImage(fp.read(), _subtype=sub_type)
-        fp.close()
-    elif main_type == 'audio':
-        fp = open(file_path, 'rb')
-        msg = MIMEAudio(fp.read(), _subtype=sub_type)
-        fp.close()
+    # Add message body, using html formatting if it was used
+    if html:
+        msg = MIMEText(message_body, 'html')
     else:
-        fp = open(file_path, 'rb')
-        msg = MIMEBase(main_type, sub_type)
-        msg.set_payload(fp.read())
-        fp.close()
-
-    msg.add_header('Content-Disposition', 'attachment',
-                   filename=os.path.basename(file_path))
+        msg = MIMEText(message_body)
     message.attach(msg)
+
+    # Add attacments if they exist
+    if len(attachments):
+        for attachment in attachments:
+            content_type, encoding = mimetypes.guess_type(attachment)
+
+            if content_type is None or encoding is not None:
+                content_type = 'application/octet-stream'
+                main_type, sub_type = content_type.split('/', 1)
+
+            if main_type == 'text':
+                fp = open(attachment, 'rb')
+                msg = MIMEText(fp.read(), _subtype=sub_type)
+                fp.close()
+            elif main_type == 'image':
+                fp = open(attachment, 'rb')
+                msg = MIMEImage(fp.read(), _subtype=sub_type)
+                fp.close()
+            elif main_type == 'audio':
+                fp = open(attachment, 'rb')
+                msg = MIMEAudio(fp.read(), _subtype=sub_type)
+                fp.close()
+            else:
+                fp = open(attachment, 'rb')
+                msg = MIMEBase(main_type, sub_type)
+                msg.set_payload(fp.read())
+                fp.close()
+
+            msg.add_header('Content-Disposition', 'attachment',
+                           filename=os.path.basename(attachment))
+            message.attach(msg)
 
     b64_bytes = base64.urlsafe_b64encode(message.as_bytes())
     b64_string = b64_bytes.decode()

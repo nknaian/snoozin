@@ -122,24 +122,22 @@ class Snoozin:
         else:
             return None
 
-    def send(self, to, subject, message_text, file_path=''):
+    def send(self, to, subject, message_body, html=False, attachments=[]):
         """Send a message.
 
         Args:
             to: Email address of the receiver.
             subject: The subject of the email message.
-            message_text: The text of the email message.
-            file_path: (optional) The path to the file to be attached.
+            plaintext_content: The plantext content of the email message.
+            message_text: The plaintext content of the email message.
+            html: (optional) Whether the mesage_body is formatted as html
+            attachments: (optional) List of file paths to files that should
+                         be attached to the email
 
         Returns:
             The message that was sent
         """
 
-        if file_path:
-            message = \
-                send_email.CreateMessageWithAttachment(to, subject,
-                                                       message_text,
-                                                       file_path)
-        else:
-            message = send_email.CreateMessage(to, subject, message_text)
+        message = send_email.CreateMessage(to, subject, message_body, html,
+                                           attachments)
         return send_email.SendMessage(self.service, message)
