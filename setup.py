@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="snoozingmail",
-    version="0.0.5",
+    version="0.0.6",
     author="Nick Is Snoozin",
     author_email="snoozinforabrusin@gmail.com",
     description="A minimal python3 wrapper for the Gmail API",
@@ -22,5 +22,5 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
     ],
-    python_requires='>=3.5',
+    python_requires='>=3.6',
 )
