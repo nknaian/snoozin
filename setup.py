@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="snoozingmail",
-    version="0.0.6",
+    version="0.0.7",
     author="Nick Is Snoozin",
     author_email="snoozinforabrusin@gmail.com",
     description="A minimal python3 wrapper for the Gmail API",
@@ -16,7 +16,8 @@ setuptools.setup(
     install_requires=[
         'google-api-python-client',
         'google-auth-httplib2',
-        'google-auth-oauthlib'
+        'google-auth-oauthlib',
+        'html2text'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

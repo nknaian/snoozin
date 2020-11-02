@@ -1,5 +1,5 @@
 import re
-import email.message as email_msg
+import html2text
 
 import snoozingmail.gmail.creds as creds
 import snoozingmail.gmail.read as read_email
@@ -92,33 +92,38 @@ class Snoozin:
         modify_email.ModifyMessage(self.service, msg_id, msg_labels)
 
     def get_msg_body(self, msg_id):
-        """Get the plain text portion of the given message's body.
+        """Get the message body in plain text format.
+
+        Works as long as the message has a 'text/plain' or 'text/html' part.
 
         Args:
             msg_id: The id of the message, which can be used to get details
                     of the message.
 
         Returns:
-            The plaintext message body if it exists. Otherwise, None.
+            The body of the email in plain text format
         """
         # Get message
         message = read_email.GetMimeMessage(self.service, msg_id)
 
-        # Find the plain text part of the message body
-        plain_txt_msg = email_msg.Message()
-        if not message.is_multipart() and \
-                (message.get_content_type() == 'text/plain'):
-            plain_txt_msg = message
-        elif message.is_multipart():
+        # If message is multipart, then find the first 'text/plain' or
+        # 'text/html' part
+        if message.is_multipart():
             # Go through message and capture plain text of message body
             for part in message.walk():
-                if part.get_content_type() == 'text/plain':
-                    plain_txt_msg = part
+                if part.get_content_type() in ['text/plain', 'text/html']:
+                    message = part
+                    break
 
-        # If we found plain text, decode it and return.
-        if plain_txt_msg:
-            msg_bytes = plain_txt_msg.get_payload(decode=True)
-            return msg_bytes.decode(plain_txt_msg.get_content_charset())
+        # Decode the message
+        msg_bytes = message.get_payload(decode=True)
+        decoded_message = msg_bytes.decode(message.get_content_charset())
+
+        # Return the message, doing html decoding if necessary
+        if message.get_content_type() == 'text/html':
+            return html2text.html2text(decoded_message)
+        elif message.get_content_type() == 'text/plain':
+            return decoded_message
         else:
             return None
 
